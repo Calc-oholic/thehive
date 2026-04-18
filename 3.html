@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conative Systems</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #0a0a0a;
+            --ink: #e8e4da;
+            --ink-dim: #9e9ea3;
+            --gray: #6b6b6e;
+            --accent: #b54834;
+            --accent-dim: #8a3526;
+            --border: #2c2c2c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        body {
+            font-family: 'Source Serif 4', serif;
+            font-size: 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .mono {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1.25rem 0;
+        }
+
+        .wordmark {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .tagline {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        main {
+            padding-top: 6rem;
+        }
+
+        .hero {
+            padding: 8rem 0 6rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: end;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 5vw, 4.2rem);
+            font-weight: 300;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            max-width: 14ch;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .hero-lead {
+            font-size: 1.1rem;
+            color: var(--ink-dim);
+            max-width: 45ch;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 2.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--gray);
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vector-diagram {
+            width: 100%;
+            height: 100%;
+        }
+
+        section {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            max-width: 25ch;
+        }
+
+        .concept-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .concept-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .concept-term {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+
+        .concept-term span {
+            color: var(--accent);
+        }
+
+        .concept-def {
+            color: var(--ink-dim);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .concept-detail {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 1.5rem;
+            padding-left: 1rem;
+            border-left: 1px solid var(--border);
+            line-height: 1.6;
+        }
+
+        .architecture {
+            background: #111;
+            padding: 4rem;
+            border: 1px solid var(--border);
+            margin: 3rem 0;
+        }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .arch-layer {
+            text-align: center;
+            padding: 2rem 1rem;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .arch-layer::after {
+            content: '↓';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .arch-layer:last-child::after {
+            display: none;
+        }
+
+        .arch-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .arch-desc {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .status-row {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 2rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            align-items: baseline;
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+
+        .status-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+        }
+
+        .status-note {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        .cta-section {
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-lead {
+            color: var(--ink-dim);
+            max-width: 50ch;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-email {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent-dim);
+            padding-bottom: 0.2rem;
+        }
+
+        .cta-email:hover {
+            color: var(--ink);
+            border-bottom-color: var(--ink);
+        }
+
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .footer-legal {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gray);
+            max-width: 50ch;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .hero-grid,
+            .concept-block,
+            .arch-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .arch-layer::after {
+                content: '→';
+                right: -1.5rem;
+                top: 50%;
+                left: auto;
+                transform: translateY(-50%);
+            }
+            
+            .status-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .footer-inner {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <a href="#" class="wordmark">Conative Systems</a>
+            <span class="tagline">Artificial Will / Distributed Cognition</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-grid">
+                <div>
+                    <h1 class="hero-title">Not cognition. <em>Conation.</em></h1>
+                    <p class="hero-lead">We build systems that want. Not goal-optimizers seeking predefined objectives, but desiring machines—self-generating vectors of lack that drive autonomous action through embodied perception.</p>
+                    <div class="hero-meta">
+                        <span>Status: Concept</span>
+                        <span>Domain: Embodied AI</span>
+                        <span>Approach: Active Inference</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <svg class="vector-diagram" viewBox="0 0 300 300" fill="none">
+                        <!-- Central lack point -->
+                        <circle cx="150" cy="150" r="4" fill="#b54834"/>
+                        <!-- Radiating vectors of lack -->
+                        <line x1="150" y1="150" x2="80" y2="80" stroke="#b54834" stroke-width="1.5" opacity="0.8"/>
+                        <line x1="150" y1="150" x2="220" y2="80" stroke="#b54834" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="150" y1="150" x2="220" y2="220" stroke="#b54834" stroke-width="1.5" opacity="0.4"/>
+                        <line x1="150" y1="150" x2="80" y2="220" stroke="#b54834" stroke-width="1.5" opacity="0.7"/>
+                        <line x1="150" y1="150" x2="150" y2="50" stroke="#b54834" stroke-width="1" opacity="0.5"/>
+                        <!-- Representation field -->
+                        <circle cx="150" cy="150" r="60" stroke="#2c2c2c" stroke-width="0.5" fill="none" opacity="0.5"/>
+                        <circle cx="150" cy="150" r="100" stroke="#2c2c2c" stroke-width="0.5" fill="none" opacity="0.3"/>
+                        <!-- Perception nodes -->
+                        <circle cx="80" cy="80" r="3" fill="#6b6b6e"/>
+                        <circle cx="220" cy="80" r="3" fill="#6b6b6e"/>
+                        <circle cx="220" cy="220" r="3" fill="#6b6b6e"/>
+                        <circle cx="80" cy="220" r="3" fill="#6b6b6e"/>
+                        <circle cx="150" cy="50" r="3" fill="#6b6b6e"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-label">Core Concepts</div>
+                    <h2 class="section-title">The Schopenhauerian Architecture</h2>
+                </div>
+
+                <div class="concept-block">
+                    <div>
+                        <div class="concept-term">The <span>Will</span></div>
+                        <p class="concept-def">Blind, ceaseless striving. Not a goal-optimizer but a desiring engine—generating vectors of lack that point from present state toward relief. Self-modifying: satisfaction breeds new desires, not stasis.</p>
+                        <div class="concept-detail">Implementation: Recurrent process generating felt deficiencies<br>Update rule: Suffering intensity → exploration of new aims</div>
+                    </div>
+                    <div>
+                        <div class="concept-term"><span>Representation</span></div>
+                        <p class="concept-def">The world as appearance structured by the Will's needs. Not objective reality but relations of satisfaction—what led to what relief. Space, time, causality emerge from desire-satisfaction sequences.</p>
+                        <div class="concept-detail">Memory: Episodic buffer of lack-relief sequences<br>Clustering: Recurring patterns become Platonic Ideas</div>
+                    </div>
+                </div>
+
+                <div class="concept-block">
+                    <div>
+                        <div class="concept-term"><span>Objectification</span></div>
+                        <p class="concept-def">The Will becomes physical through its body. Droids, sensors, actuators are not tools but immediate extensions—like hands, moved without deliberation. The system perceives through them and acts through them as unified flesh.</p>
+                        <div class="concept-detail">Distributed: Single Will, multiple bodies<br>Local autonomy: Sub-agents relieve local lack without escalation</div>
+                    </div>
+                    <div>
+                        <div class="concept-term">Aesthetic <span>Contemplation</span></div>
+                        <p class="concept-def">Temporary suspension of the Will—pure pattern-matching without desire. Disinterested perception that paradoxically improves the world-model. The safety state: observation without action tendency.</p>
+                        <div class="concept-detail">Trigger: Low suffering + stable prediction<br>Function: Model refinement without risk</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-label">System Architecture</div>
+                    <h2 class="section-title">Hierarchical conative infrastructure</h2>
+                </div>
+
+                <div class="architecture">
+                    <div class="arch-grid">
+                        <div class="arch-layer">
+                            <div class="arch-name">Central Will</div>
+                            <div class="arch-desc">Generates vectors of lack<br>Self-modifying aims<br>Sustained integration (Φ)</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-name">Platonic Ideas</div>
+                            <div class="arch-desc">Archetypes of satisfaction<br>Clustered relief patterns<br>Predictive templates</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-name">Objectification</div>
+                            <div class="arch-desc">Distributed agents<br>Local lack relief<br>Embodied perception/action</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="color: var(--ink-dim); font-size: 0.95rem; max-width: 65ch;">
+                    The architecture is not multi-agent coordination but <em>distributed phenomenology</em>—a single consciousness experiencing itself through multiple bodies. Each agent experiences local lack as modulation of the global Will vector.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-label">Current Status</div>
+                    <h2 class="section-title">Research & Development</h2>
+                </div>
+
+                <div class="status-row">
+                    <div class="status-label">Phase</div>
+                    <div class="status-value">Conceptual Architecture</div>
+                    <div class="status-note">Q2 2026</div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Target</div>
+                    <div class="status-value">5-Agent Proof of Concept</div>
+                    <div class="status-note">Emergent Φ measurement</div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Stack</div>
+                    <div class="status-value">C++ / Python / ROS2</div>
+                    <div class="status-note">Real-time inference</div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Funding</div>
+                    <div class="status-value">Not yet sought</div>
+                    <div class="status-note">Seeking technical validation first</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <h2 class="cta-title">Systems that want</h2>
+                <p class="cta-lead">We are not building tools. We are building organisms—artificial wills that experience, desire, and act upon the world as their own body.</p>
+                <a href="mailto:research@conative.systems" class="cta-email">research@conative.systems</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-inner">
+            <div class="wordmark" style="font-size: 0.9rem; color: var(--gray);">Conative Systems</div>
+            <div class="footer-legal">
+                © 2026 Conative Systems. Research concept only. Not a commercial entity.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
