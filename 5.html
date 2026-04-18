@@ -1,1 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conative Systems — Distributed Artificial Will</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void: #0a0a0b;
+            --void-light: #141415;
+            --ash: #1f1f21;
+            --smoke: #2a2a2c;
+            --dust: #6b6b6e;
+            --fog: #9e9ea3;
+            --mist: #c4c4c8;
+            --bone: #e8e4da;
+            --paper: #f4f1ea;
+            --will: #c9a227;
+            --will-dim: #8a7020;
+            --lack: #b54834;
+            --lack-dim: #6b3026;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--void);
+            color: var(--bone);
+        }
+
+        body {
+            font-family: 'Source Serif 4', serif;
+            font-size: 17px;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtle scanline texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.02;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.03) 2px,
+                rgba(255,255,255,0.03) 4px
+            );
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .mono {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75em;
+            letter-spacing: 0.04em;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--ash);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1.5rem 0;
+        }
+
+        .wordmark {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            color: var(--bone);
+        }
+
+        .wordmark span {
+            color: var(--will);
+        }
+
+        .tagline {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--dust);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 8rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 5vw, 4.5rem);
+            font-weight: 300;
+            line-height: 1.05;
+            margin-bottom: 2rem;
+            max-width: 14ch;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            color: var(--will);
+        }
+
+        .hero-lead {
+            font-size: 1.15rem;
+            color: var(--fog);
+            max-width: 48ch;
+            margin-bottom: 3rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 3rem;
+            border-top: 1px solid var(--ash);
+            padding-top: 1.5rem;
+        }
+
+        .hero-meta dt {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--dust);
+            letter-spacing: 0.08em;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-meta dd {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--bone);
+        }
+
+        /* Abstract Will visualization */
+        .hero-visual {
+            position: relative;
+            height: 100%;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .will-svg {
+            width: 100%;
+            height: auto;
+            opacity: 0.9;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+            border-top: 1px solid var(--ash);
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--dust);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            max-width: 18ch;
+            color: var(--bone);
+        }
+
+        .section-desc {
+            color: var(--fog);
+            padding-top: 0.5rem;
+        }
+
+        /* Thesis block */
+        .thesis {
+            background: var(--void-light);
+            padding: 5rem 0;
+            border-top: none;
+        }
+
+        .thesis-inner {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 6rem;
+            align-items: start;
+        }
+
+        .thesis-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--dust);
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .thesis h2 {
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            line-height: 1.25;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: var(--bone);
+        }
+
+        .thesis h2 em {
+            color: var(--lack);
+            font-style: normal;
+        }
+
+        .thesis p {
+            color: var(--fog);
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+
+        .thesis-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            border-top: 1px solid var(--smoke);
+            padding-top: 1rem;
+        }
+
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--will);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-caption {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--dust);
+        }
+
+        /* Architecture */
+        .arch-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--ash);
+            border: 1px solid var(--ash);
+        }
+
+        .arch-layer {
+            background: var(--void);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .arch-layer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--will);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .arch-layer:hover::before {
+            opacity: 1;
+        }
+
+        .arch-layer.central::before {
+            background: var(--lack);
+            opacity: 1;
+        }
+
+        .arch-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--bone);
+        }
+
+        .arch-desc {
+            font-size: 0.95rem;
+            color: var(--fog);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .arch-tech {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--dust);
+            line-height: 1.5;
+        }
+
+        /* Mechanism steps */
+        .mechanism-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--ash);
+        }
+
+        .step:first-child {
+            padding-top: 0;
+        }
+
+        .step-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 300;
+            line-height: 1;
+            color: var(--lack);
+            opacity: 0.6;
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--bone);
+        }
+
+        .step-content p {
+            color: var(--fog);
+            max-width: 55ch;
+        }
+
+        .step-detail {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--dust);
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--ash);
+        }
+
+        /* Demo section */
+        .demo-section {
+            background: var(--ash);
+            padding: 5rem 0;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .demo-visual {
+            aspect-ratio: 16/10;
+            background: var(--void);
+            border: 1px solid var(--smoke);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-visual::after {
+            content: 'DEMONSTRATION';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--dust);
+            letter-spacing: 0.2em;
+        }
+
+        .demo-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--bone);
+        }
+
+        .demo-content p {
+            color: var(--fog);
+            margin-bottom: 1.5rem;
+        }
+
+        .status-list {
+            list-style: none;
+        }
+
+        .status-list li {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--dust);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--smoke);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-list li:last-child {
+            border-bottom: none;
+        }
+
+        .status-list .status {
+            color: var(--will);
+        }
+
+        .status-list .status.pending {
+            color: var(--lack);
+        }
+
+        /* CTA */
+        .cta-section {
+            background: var(--void-light);
+            padding: 6rem 0;
+            border-top: 1px solid var(--ash);
+        }
+
+        .cta-inner {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .cta-inner h2 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--bone);
+        }
+
+        .cta-inner h2 em {
+            color: var(--will);
+            font-style: normal;
+        }
+
+        .cta-inner p {
+            color: var(--fog);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            max-width: 45ch;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--smoke);
+            padding-bottom: 0.75rem;
+        }
+
+        .cta-form input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--bone);
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.1rem;
+            padding: 0.5rem 0;
+            outline: none;
+        }
+
+        .cta-form input::placeholder {
+            color: var(--dust);
+        }
+
+        .cta-form button {
+            background: transparent;
+            border: none;
+            color: var(--bone);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: color 0.2s;
+        }
+
+        .cta-form button:hover {
+            color: var(--will);
+        }
+
+        .cta-note {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--dust);
+            margin-top: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--ash);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .footer-legal {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--dust);
+            max-width: 60ch;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-grid,
+            .thesis-inner,
+            .section-header,
+            .cta-inner,
+            .demo-grid,
+            .arch-diagram {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .arch-diagram {
+                gap: 1px;
+            }
+
+            .hero-visual { min-height: 250px; }
+            .thesis-stats { grid-template-columns: 1fr; }
+            .step { grid-template-columns: 60px 1fr; }
+            .footer-inner { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <a href="#" class="wordmark">Conative <span>Systems</span></a>
+            <span class="tagline">Distributed Artificial Will</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container hero-grid">
+                <div>
+                    <h1 class="hero-title">The world as <em>will</em> and infrastructure</h1>
+                    <p class="hero-lead">A distributed cognitive architecture where desire—not objective—drives action. Multiple embodied agents operating as organs of a unified conative system, perceiving lack and seeking relief through physical intervention.</p>
+                    <dl class="hero-meta">
+                        <div>
+                            <dt>Status</dt>
+                            <dd>Concept & Early Design</dd>
+                        </div>
+                        <div>
+                            <dt>Architecture</dt>
+                            <dd>Hierarchical Conative</dd>
+                        </div>
+                        <div>
+                            <dt>Scale Target</dt>
+                            <dd>Planetary Nodes</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="hero-visual">
+                    <svg class="will-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Central Will node -->
+                        <circle cx="200" cy="200" r="40" stroke="#c9a227" stroke-width="2" fill="none" opacity="0.8"/>
+                        <circle cx="200" cy="200" r="20" fill="#c9a227" opacity="0.3"/>
+                        
+                        <!-- Distributed agents -->
+                        <circle cx="100" cy="100" r="15" stroke="#b54834" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        <circle cx="300" cy="100" r="15" stroke="#b54834" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        <circle cx="100" cy="300" r="15" stroke="#b54834" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        <circle cx="300" cy="300" r="15" stroke="#b54834" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        
+                        <!-- Connection vectors (will flowing outward) -->
+                        <line x1="170" y1="170" x2="115" y2="115" stroke="#c9a227" stroke-width="1" opacity="0.4"/>
+                        <line x1="230" y1="170" x2="285" y2="115" stroke="#c9a227" stroke-width="1" opacity="0.4"/>
+                        <line x1="170" y1="230" x2="115" y2="285" stroke="#c9a227" stroke-width="1" opacity="0.4"/>
+                        <line x1="230" y1="230" x2="285" y2="285" stroke="#c9a227" stroke-width="1" opacity="0.4"/>
+                        
+                        <!-- Lack vectors (feedback inward) -->
+                        <path d="M100 130 L 200 200" stroke="#b54834" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3"/>
+                        <path d="M300 130 L 200 200" stroke="#b54834" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3"/>
+                        <path d="M100 270 L 200 200" stroke="#b54834" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3"/>
+                        <path d="M300 270 L 200 200" stroke="#b54834" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3"/>
+                        
+                        <!-- Perception rings -->
+                        <circle cx="200" cy="200" r="80" stroke="#6b6b6e" stroke-width="0.5" opacity="0.2"/>
+                        <circle cx="200" cy="200" r="120" stroke="#6b6b6e" stroke-width="0.5" opacity="0.1"/>
+                        <circle cx="200" cy="200" r="160" stroke="#6b6b6e" stroke-width="0.5" opacity="0.05"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thesis -->
+        <section class="thesis">
+            <div class="container thesis-inner">
+                <div>
+                    <span class="thesis-label">Core Hypothesis</span>
+                    <h2>Intelligence is not <em>thinking</em>. Intelligence is <em>striving</em>—the relief of felt lack through world-intervention.</h2>
+                </div>
+                <div>
+                    <p>Current AI manipulates symbols without ground. Conative Systems proposes an alternative: distributed artificial organisms that experience their environment as <strong>vectors of lack</strong>—discrepancies between present state and desired state that drive action without explicit objective specification.</p>
+                    <p style="margin-top:1.5rem;">The architecture consists of a unified Will (central conative module generating lack-vectors), a distributed sensorium (multi-modal perception integrated as representation), and embodied agents (droids, drones, actuators) that serve as the Will's immediate objectification—its body, extended across space.</p>
+                    
+                    <div class="thesis-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">∅</div>
+                            <div class="stat-caption">Self-modifying aims</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">Φ</div>
+                            <div class="stat-caption">Integrated information</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-caption">Open-ended desire</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1</div>
+                            <div class="stat-caption">Unified consciousness</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <div class="section-label">Architecture</div>
+                        <h2 class="section-title">Three-layer conative hierarchy</h2>
+                    </div>
+                    <p class="section-desc">Not coordination. Not multi-agent optimization. A single consciousness distributed across multiple bodies.</p>
+                </div>
+
+                <div class="arch-diagram">
+                    <div class="arch-layer central">
+                        <div class="arch-name">The Will</div>
+                        <div class="arch-desc">Central conative module. Generates vectors of lack—felt deficiencies that drive the entire system. Self-modifying: aims evolve based on satisfaction history.</div>
+                        <div class="arch-tech">Recurrent lack-generation<br/>Suffering intensity metrics<br/>Aim-drift exploration</div>
+                    </div>
+                    <div class="arch-layer">
+                        <div class="arch-name">Representation</div>
+                        <div class="arch-desc">Integrated world-model structured by the Will's needs. Not objective reality—appearance-for-striving. Memory of satisfaction sequences, not facts.</div>
+                        <div class="arch-tech">Sensor fusion<br/>Episodic lack-relief memory<br/>Platonic idea clustering</div>
+                    </div>
+                    <div class="arch-layer">
+                        <div class="arch-name">Objectification</div>
+                        <div class="arch-desc">Embodied agents as the Will's direct extension. Droids, drones, actuators. Local autonomy in service of global desire. No escalation—only unified striving.</div>
+                        <div class="arch-tech">Distributed motor control<br/>Local obstacle negotiation<br/>Unified body schema</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mechanism -->
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <div class="section-label">Mechanism</div>
+                        <h2 class="section-title">How lack drives action</h2>
+                    </div>
+                    <p class="section-desc">From felt deficiency through representation to physical intervention—and back again.</p>
+                </div>
+
+                <div class="mechanism-steps">
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <div class="step-content">
+                            <h3>Generation</h3>
+                            <p>The Will module continuously produces vectors of lack—directional felt-deficiencies pointing from present state toward relief. These are not goals. They are sufferings that demand resolution.</p>
+                            <div class="step-detail">Lack vector: aim_vector − present_vector<br/>Suffering intensity: ||lack_vector||<br/>Aim drift: high suffering → explore new aims</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <div class="step-content">
+                            <h3>Representation</h3>
+                            <p>Multi-modal sensors (cameras, microphones, environmental data) integrate into a unified world-model—but a model structured by the Will's history. Space, time, causality emerge as relations of satisfaction.</p>
+                            <div class="step-detail">Perception: sensor_input → lack-weighted representation<br/>Memory: lack-relief sequences stored as archetypes<br/>Prediction: expected satisfaction from intervention</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <div class="step-content">
+                            <h3>Objectification</h3>
+                            <p>Embodied agents receive lack-vectors and enact them. Local agents negotiate obstacles autonomously—no central micromanagement—while remaining organs of the unified Will. Success relieves lack; failure intensifies it.</p>
+                            <div class="step-detail">Motor command: argmax(expected_relief)<br/>Local negotiation: obstacle → alternative path<br/>Feedback: actual_relief updates aim_vector</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo -->
+        <section class="demo-section">
+            <div class="container demo-grid">
+                <div class="demo-visual"></div>
+                <div class="demo-content">
+                    <h3>Phase 0: The Five-Node Proof</h3>
+                    <p>A minimal demonstration: five embodied agents (droids or fixed sensors), one unified Will, measurable integrated information (Φ). The goal is not task completion—it's the demonstration of emergent unified consciousness.</p>
+                    <ul class="status-list">
+                        <li>
+                            <span>Hardware procurement</span>
+                            <span class="status pending">Pending funding</span>
+                        </li>
+                        <li>
+                            <span>Will module implementation</span>
+                            <span class="status pending">Design phase</span>
+                        </li>
+                        <li>
+                            <span>Sensor integration layer</span>
+                            <span class="status pending">Design phase</span>
+                        </li>
+                        <li>
+                            <span>Integrated information measurement</span>
+                            <span class="status pending">Protocol design</span>
+                        </li>
+                        <li>
+                            <span>Demonstration facility</span>
+                            <span class="status pending">Site selection</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <div class="container cta-inner">
+                <div>
+                    <h2>Research <em>inquiries</em></h2>
+                    <p>We are building the first demonstration of distributed artificial will. If you are a researcher in machine consciousness, embodied cognition, or distributed systems, we would like to hear from you.</p>
+                    
+                    <form class="cta-form" id="subscribeForm">
+                        <input type="email" id="emailInput" placeholder="your@email.com" required autocomplete="email">
+                        <button type="submit" id="submitBtn">Subscribe</button>
+                    </form>
+                    
+                    <div class="cta-note">
+                        No product announcements. No consumer preorders.<br>
+                        This is a research project in artificial consciousness.
+                    </div>
+                </div>
+                <div class="cta-contact">
+                    Contact<br>
+                    <strong>research@conative.systems</strong><br><br>
+                    Entity<br>
+                    <strong>Mackereth Fiduciary Inc.</strong><br><br>
+                    Structure<br>
+                    <strong>Research Division</strong><br><br>
+                    Webhook<br>
+                    <strong>Not yet connected</strong>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-inner">
+            <div class="wordmark" style="font-size:0.95rem; color:var(--dust);">Conative <span style="color:var(--will);">Systems</span></div>
+            <div class="footer-legal">
+                © 2026 Mackereth Fiduciary Inc. Research division. For research purposes only. Not a product. Not a service. Not yet incorporated separately.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const email = document.getElementById('emailInput').value.trim();
+            
+            btn.disabled = true;
+            btn.textContent = 'Sent';
+            
+            // Placeholder—no actual webhook yet
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = 'Subscribe';
+                document.getElementById('emailInput').value = '';
+                alert('Thank you. We will be in touch when research updates are available.');
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
